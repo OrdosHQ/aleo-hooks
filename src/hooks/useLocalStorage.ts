@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 export function useLocalStorage<T>(key: string, defaultState: T): [T, Dispatch<SetStateAction<T>>] {
     const state = useState<T>(() => {
@@ -36,5 +36,5 @@ export function useLocalStorage<T>(key: string, defaultState: T): [T, Dispatch<S
         }
     }, [value, key])
 
-    return state
+    return useMemo(() => state, [state])
 }

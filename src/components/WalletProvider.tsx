@@ -7,7 +7,7 @@ import {
     WalletAdapterNetwork,
 } from '@demox-labs/aleo-wallet-adapter-base'
 import type { FC } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import type { Wallet } from '../hooks/useWallet'
 import { WalletContext } from '../hooks/useWallet'
@@ -204,28 +204,49 @@ export const WalletProvider: FC<WalletProviderProps> = ({
         })()
     }, [connecting, connected, autoConnect, adapter, readyState, setSelectedWalletName])
 
-    return (
-        <WalletContext.Provider
-            value={{
-                selectedWalletName,
-                setSelectedWalletName,
-                connecting,
-                setConnecting,
-                disconnecting,
-                setDisconnecting,
-                decryptPermission,
-                network,
-                programs,
-                readyState,
-                connected,
-                handleError,
-                publicKey,
-                wallet,
-                wallets,
-                adapter,
-            }}
-        >
-            {children}
-        </WalletContext.Provider>
+    return useMemo(
+        () => (
+            <WalletContext.Provider
+                value={{
+                    selectedWalletName,
+                    setSelectedWalletName,
+                    connecting,
+                    setConnecting,
+                    disconnecting,
+                    setDisconnecting,
+                    decryptPermission,
+                    network,
+                    programs,
+                    readyState,
+                    connected,
+                    handleError,
+                    publicKey,
+                    wallet,
+                    wallets,
+                    adapter,
+                }}
+            >
+                {children}
+            </WalletContext.Provider>
+        ),
+        [
+            selectedWalletName,
+            setSelectedWalletName,
+            connecting,
+            setConnecting,
+            disconnecting,
+            setDisconnecting,
+            decryptPermission,
+            network,
+            programs,
+            readyState,
+            connected,
+            handleError,
+            publicKey,
+            wallet,
+            wallets,
+            adapter,
+            children,
+        ],
     )
 }
