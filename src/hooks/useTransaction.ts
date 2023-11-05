@@ -6,21 +6,21 @@ import {
 import { useCallback, useMemo, useState } from 'react'
 import { useWallet } from './useWallet'
 
-export const useBulkTransaction = () => {
+export const useTransaction = () => {
     const { connected, adapter } = useWallet()
     const [error, setError] = useState<null | Error>(null)
     const [loading, setLoading] = useState(false)
-    const [transactionIds, setTransactionIds] = useState<null | string[]>(null)
+    const [transactionId, setTransactionId] = useState<null | string>(null)
 
-    const requestBulkTransactions = useCallback(async (aleoTransactions: AleoTransaction[]) => {
+    const executeTransaction = useCallback(async (aleoTransaction: AleoTransaction) => {
         try {
             setLoading(true)
             if (!connected) throw new WalletNotConnectedError()
 
-            if (adapter && 'requestBulkTransactions' in adapter) {
-                const transactionId = await adapter.requestBulkTransactions(aleoTransactions)
+            if (adapter && 'requestTransaction' in adapter) {
+                const transactionId = await adapter.requestTransaction(aleoTransaction)
 
-                setTransactionIds(transactionId)
+                setTransactionId(transactionId)
 
                 return transactionId
             } else {
@@ -36,7 +36,7 @@ export const useBulkTransaction = () => {
     }, [])
 
     return useMemo(
-        () => ({ requestBulkTransactions, error, transactionIds, loading }),
-        [requestBulkTransactions, error, transactionIds, loading],
+        () => ({ executeTransaction, error, transactionId, loading }),
+        [executeTransaction, error, transactionId, loading],
     )
 }
