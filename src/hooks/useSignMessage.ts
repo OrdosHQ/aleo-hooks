@@ -8,28 +8,31 @@ export const useSignMessage = () => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<null | Uint8Array>(null)
 
-    const signMessage = useCallback(async (message: Uint8Array) => {
-        try {
-            setLoading(true)
-            if (!connected) throw new WalletNotConnectedError()
+    const signMessage = useCallback(
+        async (message: Uint8Array) => {
+            try {
+                setLoading(true)
+                if (!connected) throw new WalletNotConnectedError()
 
-            if (adapter && 'signMessage' in adapter) {
-                const data = await adapter.signMessage(message)
+                if (adapter && 'signMessage' in adapter) {
+                    const data = await adapter.signMessage(message)
 
-                setData(data)
+                    setData(data)
 
-                return data
-            } else {
-                throw new WalletError('Not implemented in your wallet provider')
+                    return data
+                } else {
+                    throw new WalletError('Not implemented in your wallet provider')
+                }
+            } catch (err: any) {
+                setError(err)
+
+                return null
+            } finally {
+                setLoading(false)
             }
-        } catch (err: any) {
-            setError(err)
-
-            return null
-        } finally {
-            setLoading(false)
-        }
-    }, [])
+        },
+        [connected, adapter],
+    )
 
     return useMemo(
         () => ({ signMessage, error, data, loading }),

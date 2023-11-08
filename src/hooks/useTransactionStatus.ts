@@ -8,28 +8,31 @@ export const useTransactionStatus = () => {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState<null | string>(null)
 
-    const requestTransactionStatus = useCallback(async (transactionId: string) => {
-        try {
-            setLoading(true)
-            if (!connected) throw new WalletNotConnectedError()
+    const requestTransactionStatus = useCallback(
+        async (transactionId: string) => {
+            try {
+                setLoading(true)
+                if (!connected) throw new WalletNotConnectedError()
 
-            if (adapter && 'transactionStatus' in adapter) {
-                const data = await adapter.transactionStatus(transactionId)
+                if (adapter && 'transactionStatus' in adapter) {
+                    const data = await adapter.transactionStatus(transactionId)
 
-                setData(data)
+                    setData(data)
 
-                return data
-            } else {
-                throw new WalletError('Not implemented in your wallet provider')
+                    return data
+                } else {
+                    throw new WalletError('Not implemented in your wallet provider')
+                }
+            } catch (err: any) {
+                setError(err)
+
+                return null
+            } finally {
+                setLoading(false)
             }
-        } catch (err: any) {
-            setError(err)
-
-            return null
-        } finally {
-            setLoading(false)
-        }
-    }, [])
+        },
+        [connected, adapter],
+    )
 
     return useMemo(
         () => ({ requestTransactionStatus, error, data, loading }),
