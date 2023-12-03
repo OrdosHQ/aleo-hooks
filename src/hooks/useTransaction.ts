@@ -12,31 +12,28 @@ export const useTransaction = () => {
     const [loading, setLoading] = useState(false)
     const [transactionId, setTransactionId] = useState<null | string>(null)
 
-    const executeTransaction = useCallback(
-        async (aleoTransaction: AleoTransaction) => {
-            try {
-                setLoading(true)
-                if (!connected) throw new WalletNotConnectedError()
+    const executeTransaction = useCallback(async (aleoTransaction: AleoTransaction) => {
+        try {
+            setLoading(true)
+            if (!connected) throw new WalletNotConnectedError()
 
-                if (adapter && 'requestTransaction' in adapter) {
-                    const transactionId = await adapter.requestTransaction(aleoTransaction)
+            if (adapter && 'requestTransaction' in adapter) {
+                const transactionId = await adapter.requestTransaction(aleoTransaction)
 
-                    setTransactionId(transactionId)
+                setTransactionId(transactionId)
 
-                    return transactionId
-                } else {
-                    throw new WalletError('Not implemented in your wallet provider')
-                }
-            } catch (err: any) {
-                setError(err)
-
-                return null
-            } finally {
-                setLoading(false)
+                return transactionId
+            } else {
+                throw new WalletError('Not implemented in your wallet provider')
             }
-        },
-        [connected, adapter],
-    )
+        } catch (err: any) {
+            setError(err)
+
+            return null
+        } finally {
+            setLoading(false)
+        }
+    }, [])
 
     return useMemo(
         () => ({ executeTransaction, error, transactionId, loading }),
