@@ -5,6 +5,7 @@ Aleo Hooks library aims to be a simple to use, yet flexible and reliable wallet-
 React Hooks are functional components that isolate the reusable part from app business logic. Hooks make it easy to reuse stateful logic between components and develop complex dApps.
 
 Live demo and sample code: https://aleo-react-boilerplate.vercel.app/
+
 Telegram discussion and support group: https://t.me/aleohooks
 
 ## Quick Setup (using React UI)
