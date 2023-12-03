@@ -106,6 +106,9 @@ and build your next big Aleo dApp!
 
 ## How to use
 
+Live demo and sample code: https://aleo-react-boilerplate.vercel.app/
+Some of the commonly used hooks:
+
 #### useConnect
 
 The connection flow for the aleo wallets extension goes like this:
