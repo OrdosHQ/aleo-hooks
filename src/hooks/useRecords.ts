@@ -3,37 +3,48 @@ import { useWallet } from './useWallet'
 import { WalletError, WalletNotConnectedError } from '@demox-labs/aleo-wallet-adapter-base'
 
 interface IUseRecrodsArguments {
-    program: string
+    program?: string | 'credits.aleo'
     enabled?: boolean
 }
 
-export const useRecords = ({ program, enabled }: IUseRecrodsArguments) => {
+export const useRecords = ({ program = 'credits.aleo', enabled = true }: IUseRecrodsArguments) => {
     const [records, setRecords] = useState<null | any[]>(null)
     const [error, setError] = useState<null | WalletError>(null)
     const [loading, setLoading] = useState(false)
-
     const { connected, adapter } = useWallet()
 
-    const requestRecords = useCallback(async () => {
-        setLoading(true)
+    const requestRecords = useCallback(
+        async (filter?: <T>(record: T, index: number, array: Array<T>) => boolean) => {
+            setLoading(true)
 
-        try {
-            if (adapter && 'requestRecords' in adapter) {
-                if (!connected) throw new WalletNotConnectedError()
+            try {
+                if (adapter && 'requestRecords' in adapter) {
+                    if (!connected) throw new WalletNotConnectedError()
 
-                const records = await adapter.requestRecords(program)
+                    const records = await adapter.requestRecords(program)
 
-                setRecords(records)
-                return records
-            } else {
-                throw new WalletError('Not implemented')
+                    if (filter) {
+                        const filteredRecords = records.filter(filter)
+
+                        setRecords(filteredRecords)
+
+                        return filteredRecords
+                    }
+
+                    setRecords(records)
+
+                    return records
+                } else {
+                    throw new WalletError('Not implemented')
+                }
+            } catch (err: any) {
+                setError(err)
+            } finally {
+                setLoading(false)
             }
-        } catch (err: any) {
-            setError(err)
-        } finally {
-            setLoading(false)
-        }
-    }, [program])
+        },
+        [program],
+    )
 
     useEffect(() => {
         if (enabled) {

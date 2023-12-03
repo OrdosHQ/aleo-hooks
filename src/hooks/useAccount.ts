@@ -4,5 +4,5 @@ import { useWallet } from './useWallet'
 export const useAccount = () => {
     const { publicKey, connected } = useWallet()
 
-    return useMemo(() => ({ publicKey, connected }), [publicKey])
+    return useMemo(() => ({ publicKey, connected }), [publicKey, connected])
 }

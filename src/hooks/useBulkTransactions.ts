@@ -12,28 +12,31 @@ export const useBulkTransactions = () => {
     const [loading, setLoading] = useState(false)
     const [transactionIds, setTransactionIds] = useState<null | string[]>(null)
 
-    const executeBulkTransactions = useCallback(async (aleoTransactions: AleoTransaction[]) => {
-        try {
-            setLoading(true)
-            if (!connected) throw new WalletNotConnectedError()
+    const executeBulkTransactions = useCallback(
+        async (aleoTransactions: AleoTransaction[]) => {
+            try {
+                setLoading(true)
+                if (!connected) throw new WalletNotConnectedError()
 
-            if (adapter && 'requestBulkTransactions' in adapter) {
-                const transactionId = await adapter.requestBulkTransactions(aleoTransactions)
+                if (adapter && 'requestBulkTransactions' in adapter) {
+                    const transactionIds = await adapter.requestBulkTransactions(aleoTransactions)
 
-                setTransactionIds(transactionId)
+                    setTransactionIds(transactionIds)
 
-                return transactionId
-            } else {
-                throw new WalletError('Not implemented in your wallet provider')
+                    return transactionIds
+                } else {
+                    throw new WalletError('Not implemented in your wallet provider')
+                }
+            } catch (err: any) {
+                setError(err)
+
+                return null
+            } finally {
+                setLoading(false)
             }
-        } catch (err: any) {
-            setError(err)
-
-            return null
-        } finally {
-            setLoading(false)
-        }
-    }, [])
+        },
+        [adapter],
+    )
 
     return useMemo(
         () => ({ executeBulkTransactions, error, transactionIds, loading }),
