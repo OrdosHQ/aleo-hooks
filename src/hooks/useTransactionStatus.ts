@@ -1,7 +1,7 @@
 import { WalletError, WalletNotConnectedError } from '@demox-labs/aleo-wallet-adapter-base'
 import { useCallback, useMemo, useState } from 'react'
 import { useWallet } from './useWallet'
-import { TransactionStatus } from 'types'
+import { TransactionStatus } from '../types'
 
 export const useTransactionStatus = () => {
     const { connected, adapter } = useWallet()

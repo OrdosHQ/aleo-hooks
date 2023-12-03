@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
-import { TransactionStatus } from 'types'
+import { TransactionStatus } from '../types'
 import { useTransactionStatus } from './useTransactionStatus'
 
 interface UseWaitAguments {
