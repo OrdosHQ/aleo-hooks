@@ -6,10 +6,12 @@ interface UseWaitAguments {
     poolingInterval?: number
 }
 
-export const useWait = ({ poolingInterval = 1_000 }: UseWaitAguments) => {
+export const useWait = (
+    { poolingInterval = 1_000 }: UseWaitAguments = { poolingInterval: 1_000 },
+) => {
     const { requestTransactionStatus } = useTransactionStatus()
     const [status, setStatus] = useState<TransactionStatus | null>(null)
-    const [error, setError] = useState<unknown>(null)
+    const [error, setError] = useState<null | Error>(null)
     const intervalIdRef = useRef<null | number>(null)
 
     const stopPooling = useCallback(() => {
@@ -52,7 +54,6 @@ export const useWait = ({ poolingInterval = 1_000 }: UseWaitAguments) => {
                                 clearInterval(intervalIdRef.current)
 
                                 if (status === TransactionStatus.Failed) {
-                                    setError(status)
                                     reject(status)
                                 }
 
@@ -63,7 +64,7 @@ export const useWait = ({ poolingInterval = 1_000 }: UseWaitAguments) => {
                         }, poolingInterval)
                     }
                 } catch (error) {
-                    setError(error)
+                    setError(error as any)
                     reject(error)
                 }
             })

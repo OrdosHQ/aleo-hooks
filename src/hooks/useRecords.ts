@@ -7,7 +7,12 @@ interface IUseRecrodsArguments {
     enabled?: boolean
 }
 
-export const useRecords = ({ program = 'credits.aleo', enabled = true }: IUseRecrodsArguments) => {
+export const useRecords = (
+    { program = 'credits.aleo', enabled = true }: IUseRecrodsArguments = {
+        program: 'credits.aleo',
+        enabled: true,
+    },
+) => {
     const [records, setRecords] = useState<null | any[]>(null)
     const [error, setError] = useState<null | WalletError>(null)
     const [loading, setLoading] = useState(false)
@@ -43,14 +48,14 @@ export const useRecords = ({ program = 'credits.aleo', enabled = true }: IUseRec
                 setLoading(false)
             }
         },
-        [program, adapter],
+        [program, adapter, connected],
     )
 
     useEffect(() => {
         if (enabled) {
             requestRecords()
         }
-    }, [enabled])
+    }, [enabled, adapter])
 
     return useMemo(
         () => ({ records, error, loading, requestRecords }),
