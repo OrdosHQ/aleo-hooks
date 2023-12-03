@@ -43,7 +43,7 @@ export const useRecords = ({ program = 'credits.aleo', enabled = true }: IUseRec
                 setLoading(false)
             }
         },
-        [program],
+        [program, adapter],
     )
 
     useEffect(() => {
